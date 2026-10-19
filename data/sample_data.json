@@ -1,0 +1,560 @@
+{
+  "schema_version": 1,
+  "owner": {
+    "name": "Jordan Avery",
+    "phone": "+1 555 0134",
+    "email": "jordan@example.com",
+    "address": "48 Harbour Lane, Bayside",
+    "emergency_contact": {
+      "type": "Contact",
+      "id": "4e83be62",
+      "name": "Riley Chen",
+      "phone": "+1 555 0142",
+      "email": "riley@example.com",
+      "address": "",
+      "relationship": "neighbour",
+      "notes": "Has a spare key and knows Mochi's medication schedule."
+    },
+    "preferred_vet": {
+      "type": "VetClinic",
+      "id": "1f1d8d50",
+      "name": "Dr. Priya Rao",
+      "phone": "+1 555 0177",
+      "email": "care@baysidevet.example",
+      "address": "12 Marine Parade, Bayside",
+      "relationship": "veterinarian",
+      "notes": "",
+      "clinic_name": "Bayside Animal Hospital",
+      "is_emergency": true,
+      "hours": "08:00-20:00"
+    },
+    "pets": [
+      {
+        "id": "4e0dc517",
+        "name": "Biscuit",
+        "species": "dog",
+        "breed": "Golden Retriever",
+        "sex": "male",
+        "date_of_birth": "2023-04-18",
+        "age_years": 1.0,
+        "weight_kg": 31.4,
+        "color": "golden",
+        "microchip_id": "985141000123456",
+        "is_neutered": true,
+        "photo_path": "",
+        "notes": "",
+        "energy_level": "high",
+        "tasks": [
+          {
+            "type": "WalkTask",
+            "id": "b2772266",
+            "title": "Morning walk",
+            "category": "walk",
+            "duration_minutes": 30,
+            "priority": 3,
+            "recurrence": "daily",
+            "weekdays": [],
+            "due_date": null,
+            "preferred_time": "morning",
+            "fixed_time": null,
+            "skippable": true,
+            "notes": "",
+            "is_completed": false,
+            "distance_km": 2.5,
+            "weather_sensitive": true
+          },
+          {
+            "type": "FeedingTask",
+            "id": "4f030a09",
+            "title": "Breakfast",
+            "category": "feeding",
+            "duration_minutes": 10,
+            "priority": 3,
+            "recurrence": "daily",
+            "weekdays": [],
+            "due_date": null,
+            "preferred_time": "any",
+            "fixed_time": "08:00",
+            "skippable": false,
+            "notes": "",
+            "is_completed": false,
+            "portion_grams": 350
+          },
+          {
+            "type": "EnrichmentTask",
+            "id": "3b9a3de3",
+            "title": "Training session",
+            "category": "training",
+            "duration_minutes": 15,
+            "priority": 2,
+            "recurrence": "daily",
+            "weekdays": [],
+            "due_date": null,
+            "preferred_time": "any",
+            "fixed_time": null,
+            "skippable": true,
+            "notes": "",
+            "is_completed": false,
+            "indoor": true
+          },
+          {
+            "type": "WalkTask",
+            "id": "049346b6",
+            "title": "Evening walk",
+            "category": "walk",
+            "duration_minutes": 40,
+            "priority": 3,
+            "recurrence": "daily",
+            "weekdays": [],
+            "due_date": null,
+            "preferred_time": "evening",
+            "fixed_time": null,
+            "skippable": true,
+            "notes": "",
+            "is_completed": false,
+            "distance_km": 3.2,
+            "weather_sensitive": true
+          },
+          {
+            "type": "FeedingTask",
+            "id": "d8ad8e41",
+            "title": "Dinner",
+            "category": "feeding",
+            "duration_minutes": 10,
+            "priority": 3,
+            "recurrence": "daily",
+            "weekdays": [],
+            "due_date": null,
+            "preferred_time": "any",
+            "fixed_time": "18:30",
+            "skippable": false,
+            "notes": "",
+            "is_completed": false,
+            "portion_grams": 350
+          },
+          {
+            "type": "GroomingTask",
+            "id": "01efda51",
+            "title": "Brush coat",
+            "category": "grooming",
+            "duration_minutes": 15,
+            "priority": 1,
+            "recurrence": "weekly",
+            "weekdays": [
+              5
+            ],
+            "due_date": null,
+            "preferred_time": "any",
+            "fixed_time": null,
+            "skippable": true,
+            "notes": "",
+            "is_completed": false,
+            "tool": "slicker brush"
+          }
+        ],
+        "medical": {
+          "conditions": [],
+          "allergies": [],
+          "vaccinations": [
+            {
+              "id": "b37313a5",
+              "name": "Rabies",
+              "given_on": "2025-10-31",
+              "next_due_on": "2026-10-31",
+              "clinic": "Bayside Animal Hospital",
+              "lot_number": "RB-2291",
+              "bill_id": "",
+              "notes": ""
+            },
+            {
+              "id": "4049f0ba",
+              "name": "DHPP",
+              "given_on": "2026-04-19",
+              "next_due_on": "2027-04-19",
+              "clinic": "Bayside Animal Hospital",
+              "lot_number": "",
+              "bill_id": "",
+              "notes": ""
+            }
+          ],
+          "visits": [
+            {
+              "id": "66f5b424",
+              "visit_date": "2026-09-04",
+              "visit_type": "checkup",
+              "clinic": "Bayside Animal Hospital",
+              "vet_name": "Dr. Rao",
+              "reason": "Annual wellness check",
+              "diagnosis": "Healthy, mild tartar buildup",
+              "treatment": "Dental chew recommended",
+              "prescriptions": [],
+              "weight_kg": 31.4,
+              "follow_up_on": null,
+              "bill_id": "bill-dog-1",
+              "notes": ""
+            }
+          ],
+          "blood_type": "",
+          "notes": ""
+        },
+        "grooming_sessions": [
+          {
+            "id": "c5031f60",
+            "session_date": "2026-09-02",
+            "provider": "Happy Paws",
+            "groomer_id": "",
+            "services": [
+              "bath",
+              "de_shedding",
+              "nail_trim"
+            ],
+            "duration_minutes": 75,
+            "next_due_on": "2026-10-14",
+            "bill_id": "bill-dog-2",
+            "notes": ""
+          },
+          {
+            "id": "f925360c",
+            "session_date": "2026-07-22",
+            "provider": "Happy Paws",
+            "groomer_id": "",
+            "services": [
+              "bath",
+              "haircut"
+            ],
+            "duration_minutes": 90,
+            "next_due_on": "2026-09-02",
+            "bill_id": "",
+            "notes": ""
+          }
+        ],
+        "bills": [
+          {
+            "id": "bill-dog-1",
+            "description": "Annual wellness exam",
+            "category": "vet",
+            "amount": 145.0,
+            "billed_on": "2026-09-04",
+            "status": "paid",
+            "paid_on": "2026-09-04",
+            "amount_paid": 145.0,
+            "provider": "Bayside Animal Hospital",
+            "invoice_ref": "",
+            "insurance_claimed": false,
+            "reimbursed_amount": 0.0,
+            "linked_record_id": "visit-dog-1",
+            "notes": ""
+          },
+          {
+            "id": "bill-dog-2",
+            "description": "Full groom + de-shed",
+            "category": "grooming",
+            "amount": 95.0,
+            "billed_on": "2026-09-02",
+            "status": "paid",
+            "paid_on": "2026-09-02",
+            "amount_paid": 95.0,
+            "provider": "Happy Paws",
+            "invoice_ref": "",
+            "insurance_claimed": false,
+            "reimbursed_amount": 0.0,
+            "linked_record_id": "",
+            "notes": ""
+          },
+          {
+            "id": "674c2307",
+            "description": "Large-breed kibble (15kg)",
+            "category": "food",
+            "amount": 72.5,
+            "billed_on": "2026-10-04",
+            "status": "paid",
+            "paid_on": "2026-10-04",
+            "amount_paid": 72.5,
+            "provider": "",
+            "invoice_ref": "",
+            "insurance_claimed": false,
+            "reimbursed_amount": 0.0,
+            "linked_record_id": "",
+            "notes": ""
+          }
+        ],
+        "vet": {
+          "type": "VetClinic",
+          "id": "8f3ba862",
+          "name": "Dr. Priya Rao",
+          "phone": "+1 555 0177",
+          "email": "care@baysidevet.example",
+          "address": "12 Marine Parade, Bayside",
+          "relationship": "veterinarian",
+          "notes": "",
+          "clinic_name": "Bayside Animal Hospital",
+          "is_emergency": true,
+          "hours": "08:00-20:00"
+        },
+        "groomer": {
+          "type": "Groomer",
+          "id": "eb0857d7",
+          "name": "Sam Ortega",
+          "phone": "+1 555 0190",
+          "email": "",
+          "address": "",
+          "relationship": "groomer",
+          "notes": "",
+          "salon_name": "Happy Paws",
+          "typical_cost": 95.0
+        },
+        "insurance_provider": "PetSecure",
+        "insurance_policy_no": "PS-884213"
+      },
+      {
+        "id": "b98ea3d0",
+        "name": "Mochi",
+        "species": "cat",
+        "breed": "Domestic Shorthair",
+        "sex": "female",
+        "date_of_birth": "2014-10-19",
+        "age_years": 1.0,
+        "weight_kg": 4.2,
+        "color": "calico",
+        "microchip_id": "",
+        "is_neutered": true,
+        "photo_path": "",
+        "notes": "",
+        "energy_level": "low",
+        "tasks": [
+          {
+            "type": "FeedingTask",
+            "id": "fdd989cf",
+            "title": "Morning meal",
+            "category": "feeding",
+            "duration_minutes": 10,
+            "priority": 3,
+            "recurrence": "daily",
+            "weekdays": [],
+            "due_date": null,
+            "preferred_time": "any",
+            "fixed_time": "07:30",
+            "skippable": false,
+            "notes": "",
+            "is_completed": false,
+            "portion_grams": 60
+          },
+          {
+            "type": "MedicationTask",
+            "id": "30d8b3e7",
+            "title": "Arthritis medication",
+            "category": "medication",
+            "duration_minutes": 5,
+            "priority": 3,
+            "recurrence": "daily",
+            "weekdays": [],
+            "due_date": null,
+            "preferred_time": "any",
+            "fixed_time": null,
+            "skippable": false,
+            "notes": "",
+            "is_completed": false,
+            "dosage": "1 tablet",
+            "min_hours_between_doses": 12
+          },
+          {
+            "type": "EnrichmentTask",
+            "id": "87783ca8",
+            "title": "Wand play",
+            "category": "enrichment",
+            "duration_minutes": 10,
+            "priority": 2,
+            "recurrence": "daily",
+            "weekdays": [],
+            "due_date": null,
+            "preferred_time": "evening",
+            "fixed_time": null,
+            "skippable": true,
+            "notes": "",
+            "is_completed": false,
+            "indoor": true
+          },
+          {
+            "type": "FeedingTask",
+            "id": "86a4e9c9",
+            "title": "Evening meal",
+            "category": "feeding",
+            "duration_minutes": 10,
+            "priority": 3,
+            "recurrence": "daily",
+            "weekdays": [],
+            "due_date": null,
+            "preferred_time": "any",
+            "fixed_time": "19:00",
+            "skippable": false,
+            "notes": "",
+            "is_completed": false,
+            "portion_grams": 60
+          },
+          {
+            "type": "GroomingTask",
+            "id": "53e51214",
+            "title": "Brush + check for mats",
+            "category": "grooming",
+            "duration_minutes": 10,
+            "priority": 1,
+            "recurrence": "weekly",
+            "weekdays": [
+              2
+            ],
+            "due_date": null,
+            "preferred_time": "any",
+            "fixed_time": null,
+            "skippable": true,
+            "notes": "",
+            "is_completed": false,
+            "tool": ""
+          }
+        ],
+        "medical": {
+          "conditions": [
+            {
+              "id": "2e66ace2",
+              "name": "Osteoarthritis (hips)",
+              "diagnosed_on": "2025-09-11",
+              "status": "chronic",
+              "severity": "moderate",
+              "treatment": "Daily anti-inflammatory",
+              "resolved_on": null,
+              "notes": "Monitor mobility; avoid high jumps."
+            },
+            {
+              "id": "70a07ae0",
+              "name": "Ear infection",
+              "diagnosed_on": "2026-03-30",
+              "status": "resolved",
+              "severity": "mild",
+              "treatment": "",
+              "resolved_on": "2026-04-13",
+              "notes": ""
+            }
+          ],
+          "allergies": [
+            {
+              "id": "1bf47d2e",
+              "substance": "Chicken protein",
+              "reaction": "Itching and ear inflammation",
+              "severity": "severe",
+              "noted_on": "2025-06-03",
+              "notes": ""
+            }
+          ],
+          "vaccinations": [
+            {
+              "id": "2603e429",
+              "name": "FVRCP",
+              "given_on": "2025-09-11",
+              "next_due_on": "2026-09-11",
+              "clinic": "Bayside Animal Hospital",
+              "lot_number": "",
+              "bill_id": "",
+              "notes": ""
+            }
+          ],
+          "visits": [
+            {
+              "id": "e512e66d",
+              "visit_date": "2026-09-25",
+              "visit_type": "checkup",
+              "clinic": "Bayside Animal Hospital",
+              "vet_name": "Dr. Rao",
+              "reason": "Stiffness in hind legs",
+              "diagnosis": "Arthritis flare-up",
+              "treatment": "Increased anti-inflammatory dose",
+              "prescriptions": [
+                "Meloxicam 0.5mg"
+              ],
+              "weight_kg": 4.2,
+              "follow_up_on": "2026-10-23",
+              "bill_id": "bill-cat-1",
+              "notes": ""
+            },
+            {
+              "id": "da3e1144",
+              "visit_date": "2026-03-30",
+              "visit_type": "emergency",
+              "clinic": "Bayside Animal Hospital",
+              "vet_name": "Dr. Nwosu",
+              "reason": "Head shaking, scratching at ear",
+              "diagnosis": "Bacterial ear infection",
+              "treatment": "Ear drops, 14 days",
+              "prescriptions": [],
+              "weight_kg": 4.4,
+              "follow_up_on": null,
+              "bill_id": "",
+              "notes": ""
+            }
+          ],
+          "blood_type": "A",
+          "notes": ""
+        },
+        "grooming_sessions": [],
+        "bills": [
+          {
+            "id": "bill-cat-1",
+            "description": "Senior blood panel + arthritis consult",
+            "category": "vet",
+            "amount": 310.0,
+            "billed_on": "2026-09-25",
+            "status": "claimed",
+            "paid_on": "2026-09-25",
+            "amount_paid": 310.0,
+            "provider": "Bayside Animal Hospital",
+            "invoice_ref": "",
+            "insurance_claimed": true,
+            "reimbursed_amount": 180.0,
+            "linked_record_id": "",
+            "notes": ""
+          },
+          {
+            "id": "639b2ac0",
+            "description": "Arthritis tablets (90 day supply)",
+            "category": "medication",
+            "amount": 64.0,
+            "billed_on": "2026-09-01",
+            "status": "unpaid",
+            "paid_on": null,
+            "amount_paid": 0.0,
+            "provider": "Bayside Pharmacy",
+            "invoice_ref": "",
+            "insurance_claimed": false,
+            "reimbursed_amount": 0.0,
+            "linked_record_id": "",
+            "notes": ""
+          }
+        ],
+        "vet": {
+          "type": "VetClinic",
+          "id": "70756946",
+          "name": "Dr. Priya Rao",
+          "phone": "+1 555 0177",
+          "email": "care@baysidevet.example",
+          "address": "12 Marine Parade, Bayside",
+          "relationship": "veterinarian",
+          "notes": "",
+          "clinic_name": "Bayside Animal Hospital",
+          "is_emergency": true,
+          "hours": "08:00-20:00"
+        },
+        "groomer": null,
+        "insurance_provider": "",
+        "insurance_policy_no": ""
+      }
+    ],
+    "preferences": {
+      "wake_time": "07:00",
+      "sleep_time": "22:00",
+      "available_minutes": 180,
+      "break_minutes": 5,
+      "strategy": "weighted_score",
+      "currency": "USD",
+      "priority_weights": {},
+      "blocked_windows": []
+    }
+  }
+}

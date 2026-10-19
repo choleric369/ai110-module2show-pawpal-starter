@@ -1,0 +1,220 @@
+PawPal+ — Design Decisions and Open Questions
+=============================================
+Written during implementation (2026-10-16). Each entry says what was decided,
+what the alternatives were, and why the alternative lost. Section C lists the
+things I could NOT resolve from the brief and had to assume — read that one.
+
+
+-------------------------------------------------------------------------
+A. ARCHITECTURE
+-------------------------------------------------------------------------
+
+A1. The pawpal/ package never imports Streamlit.
+    Decision: all logic in pawpal/, all Streamlit in app.py + ui/.
+    Alternative: put scheduling logic directly in app.py (fewer files).
+    Why: the README requires tests for scheduling behaviour. Anything that
+    imports streamlit needs a script-run context to execute, which makes unit
+    testing painful. This split is what lets 208 tests run in ~1 second with
+    no browser. It is also what makes the UML diagram mean anything.
+
+A2. Records are the PAST, CareTask is the FUTURE.
+    Decision: VetVisit / GroomingSession / Vaccination record what happened;
+    CareTask is what to do. services/reminders.py converts one into the other.
+    Alternative: one "event" type with an is_future flag.
+    Why: they have genuinely different fields and lifecycles. A visit has a
+    diagnosis and a bill; a task has a duration and a priority. Merging them
+    means half the fields are null at any moment. The bridge module keeps them
+    connected without fusing them.
+
+A3. Money lives in exactly one place.
+    Decision: Bill objects live on Pet.bills. A visit / session / vaccination
+    stores a bill_id pointing at one.
+    Alternative: a cost float on each record type.
+    Why: with cost scattered across three record types there is no single list
+    to total, and "what did we spend this year" needs three different walks.
+    One list means every rollup in expenses.py is a filter over one collection.
+
+A4. Minutes-since-midnight internally; datetime.time only at the edges.
+    Alternative: datetime objects throughout.
+    Why: overlap and budget maths on datetimes is noisy and error-prone.
+    overlaps(a0, a1, b0, b1) is one line and trivially testable as ints.
+
+A5. JSON only, no database (your instruction).
+    storage.py is the only module that touches the disk. Writes go to a .tmp
+    file then os.replace, so a crash mid-save cannot corrupt the save file.
+    A missing or corrupt file falls back to seed data rather than crashing;
+    both paths are tested.
+
+
+-------------------------------------------------------------------------
+B. SCHEDULING DECISIONS
+-------------------------------------------------------------------------
+
+B1. Strategies decide ORDER ONLY. Placement, budget, day window and conflict
+    handling stay in Scheduler.
+    Alternative: let each strategy place its own tasks.
+    Why: this is the most important structural choice in the project. It means
+    swapping strategy can never produce an invalid plan — no overlaps, no
+    overrun, no exceptions. Four strategies share one set of correctness
+    guarantees instead of each re-implementing and re-breaking them.
+
+B2. Earliest-fit per task, NOT a single forward-moving cursor.
+    This was a bug I hit and fixed mid-build. With one monotonic cursor,
+    placing an evening-preferred task early in the ranking pushed the cursor to
+    17:00, and every later task — including the morning walk — was stranded in
+    the evening. Each task now searches the whole day from day_start, so a
+    lower-ranked task can still claim an earlier free gap.
+    Cost: the plan is no longer strictly rank-ordered by clock time. That is
+    correct behaviour, not a regression.
+
+B3. Breaks are padding around placed tasks, not cursor advance.
+    first_free_slot() treats each placed task as occupying
+    [start - break, end + break]. This survives B2's out-of-order placement,
+    which a cursor-based gap could not.
+
+B4. Non-skippable tasks bypass the TIME BUDGET but not the DAY WINDOW.
+    Medication and appointments are scheduled even when available_minutes is
+    exhausted; they are still refused if they cannot physically fit before
+    sleep_time.
+    Why: running 15 minutes over your intended budget is an inconvenience.
+    Missing a dose is a harm. The budget is a preference; the clock is a fact.
+    Consequence to know about: total_minutes() CAN exceed available_minutes
+    when non-skippable tasks are involved. That is intentional.
+
+B5. Priority bands rather than pure value-density.
+    MedicationTask.score() returns 10_000 + density, VetAppointment 5_000 +
+    density, FeedingTask x1.5, WalkTask x1.2.
+    Alternative: let priority/duration alone decide.
+    Why: pure density ranks a 5-minute nail trim above a 40-minute walk and
+    above medication, which no owner would accept. The bands encode "some
+    categories are categorically more important"; density still orders within
+    a band.
+
+B6. WalkTask gets a flat 1.2x, NOT a dynamic exercise-deficit boost.
+    I originally specced "boosted when the pet is behind on its exercise need".
+    I did not build that: score() receives only the task, not the pet, and
+    strategies rank a flat task list. Threading pet context through the
+    strategy interface for one heuristic was not worth the coupling.
+    Instead the deficit surfaces where it is actually useful — as a warning in
+    DailyPlan.unmet_needs() ("Biscuit needs 85 active min, only 30 scheduled").
+    The docstring was corrected to match what the code really does.
+
+B7. Tasks not due today are reported as SKIPPED with a reason, not filtered
+    out silently. "Why isn't my Saturday brushing in Monday's plan" is a real
+    question. A test asserts every task lands in exactly one of the two lists.
+
+B8. Anchors are placed first and never moved.
+    Two anchors at the same time: the earlier wins, the second is reported as
+    a conflict naming what it clashed with. Nothing is silently rescheduled,
+    because "your vet appointment was moved to 15:30" is worse than being told
+    it clashes.
+
+
+-------------------------------------------------------------------------
+C. AMBIGUITIES — assumptions I had to make. Tell me if any are wrong.
+-------------------------------------------------------------------------
+
+C1. CURRENCY. I raised this earlier and you did not answer, so I picked.
+    Currency is now a single household-wide setting on OwnerPreferences, and
+    the per-bill currency field was REMOVED. A prototype for one owner
+    realistically has one currency, and per-bill currency implies FX
+    conversion that nothing in the app could do correctly.
+    If you want multi-currency, it needs to come back as a per-bill field plus
+    a conversion policy.
+
+C2. AUTO-GENERATED MEDICATION IS DELIBERATELY TIMID.
+    A condition with a treatment generates a daily dose task — but ONLY if the
+    pet has no hand-entered MedicationTask at all. On my first run this
+    produced a duplicate: a manual "Arthritis medication" and a generated
+    "Daily anti-inflammatory for Osteoarthritis (hips)", both scheduled.
+    Matching free-text treatment strings to task titles is not reliable, and
+    double-scheduling a dose is a safety problem, so manual entries now win
+    outright.
+    Open question: should condition treatments generate doses at all, or
+    should medication always be hand-entered? I kept generation because it is
+    genuinely useful on a new pet with no tasks yet.
+
+C3. GENERATED TASKS ARE NOT PERSISTED.
+    Reminders are rebuilt from records on every plan, tagged "[auto]" in their
+    notes, and never saved. So ticking off an auto task does not stick across
+    a reload — the underlying record (the booster's next_due_on, say) is what
+    should change instead.
+    Open question: when you mark "Book Rabies booster" done, should the app
+    offer to log a Vaccination record then and there? That is the obvious next
+    step and I did not build it.
+
+C4. "ONCE" TASKS WITH NO DATE STAY DUE UNTIL COMPLETED.
+    A one-off with due_date=None reappears every day until ticked. The
+    alternative (due only on its creation day) silently drops things. I think
+    nagging is the right default, but it is a guess.
+
+C5. BILL GRACE PERIOD IS 30 DAYS, HARD-CODED.
+    BILL_GRACE_DAYS in records.py. Nothing in the brief said when a bill
+    becomes overdue. Easy to move into OwnerPreferences if it should be
+    configurable.
+
+C6. EXERCISE TARGETS ARE MY NUMBERS, NOT VETERINARY GUIDANCE.
+    BASE_EXERCISE_MINUTES (dog 60 / cat 20 / rabbit 30 / bird 15), energy
+    multipliers 0.7 / 1.0 / 1.4, senior x0.6, young x0.8, senior thresholds
+    dog 8y / cat 11y. Plausible, not sourced. They drive only a warning
+    message, so a wrong number misleads rather than harms — but for anything
+    real a vet should set them.
+
+C7. TIME-OF-DAY WINDOWS ARE FIXED.
+    morning 05:00-12:00, afternoon 12:00-17:00, evening 17:00-23:00. A night
+    worker's morning is not 05:00. Not configurable; belongs in
+    OwnerPreferences if it matters.
+
+C8. MULTI-PET FAIRNESS EXISTS IN ONLY ONE STRATEGY.
+    BalancedStrategy interleaves by CATEGORY, not by pet. With two pets and a
+    tight budget the other three strategies can spend the whole day on one
+    pet. unmet_needs() catches it after the fact, but nothing prevents it.
+    Per-pet fairness would be a new strategy.
+
+C9. "TODAY" COMES FROM date.today() IN THE UI.
+    Tests inject a fixed date; the app itself cannot plan for tomorrow. A date
+    picker would be a small addition if you want week-ahead planning.
+
+C10. A RECORD AND ITS BILL ARE CREATED TOGETHER BUT NOT KEPT IN SYNC.
+    Entering a cost on the vet-visit or grooming form creates a linked Bill.
+    Editing that bill later does not update the record, and vice versa — they
+    are joined by id only. Acceptable for a prototype; a real app wants one
+    edit path.
+
+
+-------------------------------------------------------------------------
+D. BUGS FOUND AND FIXED WHILE BUILDING
+-------------------------------------------------------------------------
+
+D1. Subclass fields were silently dropped on save.
+    CareTask.to_dict() listed base fields explicitly, so WalkTask.distance_km
+    and MedicationTask.dosage never reached the JSON. A round-trip test caught
+    it. Fixed generically: to_dict() now walks type(self).__dataclass_fields__
+    and appends anything the base class does not declare, so a future subclass
+    needs no serialization code of its own.
+
+D2. The monotonic-cursor placement bug — see B2.
+
+D3. Duplicate medication from the reminder generator — see C2.
+
+D4. Priority is an IntEnum, so its .value is an int, and the UI's enum-label
+    helper called .replace() on it and crashed the Pets tab. The unit tests
+    did not catch this; running app.py under Streamlit's AppTest did. The
+    helper now prefers .label when a member defines one.
+
+
+-------------------------------------------------------------------------
+E. WHAT IS ACTUALLY VERIFIED
+-------------------------------------------------------------------------
+  - 208 unit tests pass (pytest, ~1s).
+  - app.py executes end to end under streamlit.testing.v1.AppTest with zero
+    exceptions, and clicking "Generate schedule" produces a real plan
+    (10 tasks, 2h 50m, 94% of budget used).
+  - save -> load returns an identical object graph, subclasses included.
+  - Invariants asserted by tests: no overlapping slots; total minutes never
+    exceed the budget for skippable tasks; nothing placed outside waking hours
+    or inside a blocked window; every task ends up either scheduled or
+    skipped-with-a-reason.
+
+  Not verified: visual layout in a real browser (I checked it boots and runs,
+  not that it looks right), and anything in C above.

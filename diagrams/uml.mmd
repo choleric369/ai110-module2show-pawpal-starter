@@ -1,15 +1,387 @@
 classDiagram
-    %% Replace the placeholders below with your actual classes, attributes, methods, and relationships.
-    %% Keep this file updated so it matches your final implementation.
+    %% PawPal+ design. Matches the implemented code in pawpal/.
 
-    class ClassName {
-        +type attribute
-        +method() returnType
+    class Owner {
+        +str name
+        +str phone
+        +str email
+        +str address
+        +Contact emergency_contact
+        +VetClinic preferred_vet
+        +list~Pet~ pets
+        +OwnerPreferences preferences
+        +contact_card() Contact
+        +add_pet(Pet) void
+        +remove_pet(str) bool
+        +get_pet(str) Pet
+        +all_tasks() list~CareTask~
+        +all_bills() list~Bill~
+        +household_spend(date, date) float
+        +outstanding_total() float
+        +health_alerts(date) dict
+        +to_dict() dict
     }
 
-    class AnotherClass {
-        +type attribute
-        +method() returnType
+    class Contact {
+        +str name
+        +str phone
+        +str email
+        +str address
+        +str relationship
+        +validate() void
+        +formatted_phone() str
+        +tel_link() str
     }
 
-    ClassName --> AnotherClass : relationship
+    class VetClinic {
+        +str clinic_name
+        +bool is_emergency
+        +str hours
+        +is_open_now() bool
+    }
+
+    class Groomer {
+        +str salon_name
+        +float typical_cost
+    }
+
+    class Pet {
+        +str name
+        +Species species
+        +str breed
+        +Sex sex
+        +date date_of_birth
+        +float age_years
+        +float weight_kg
+        +str microchip_id
+        +bool is_neutered
+        +EnergyLevel energy_level
+        +str insurance_policy_no
+        +list~CareTask~ tasks
+        +MedicalHistory medical
+        +list~GroomingSession~ grooming_sessions
+        +list~Bill~ bills
+        +VetClinic vet
+        +Groomer groomer
+        +age(date) float
+        +age_label(date) str
+        +add_task(CareTask) void
+        +daily_exercise_need() int
+        +is_senior() bool
+        +add_grooming_session(GroomingSession) void
+        +last_grooming() GroomingSession
+        +grooming_due(date, int) bool
+        +add_bill(Bill) void
+        +total_spent(date, date) float
+        +outstanding_total() float
+        +health_alerts(date) list~str~
+        +to_dict() dict
+    }
+
+    class MedicalHistory {
+        +list~Condition~ conditions
+        +list~Allergy~ allergies
+        +list~Vaccination~ vaccinations
+        +list~VetVisit~ visits
+        +add_visit(VetVisit) void
+        +add_vaccination(Vaccination) void
+        +active_conditions() list~Condition~
+        +critical_allergies() list~Allergy~
+        +due_vaccinations(date, int) list~Vaccination~
+        +upcoming_follow_ups(date) list~VetVisit~
+        +last_visit() VetVisit
+        +weight_history() list
+        +summary_line() str
+    }
+
+    class Condition {
+        +str name
+        +date diagnosed_on
+        +ConditionStatus status
+        +Severity severity
+        +str treatment
+        +is_active() bool
+    }
+
+    class Allergy {
+        +str substance
+        +str reaction
+        +Severity severity
+        +is_critical() bool
+    }
+
+    class Vaccination {
+        +str name
+        +date given_on
+        +date next_due_on
+        +str clinic
+        +str bill_id
+        +is_due(date, int) bool
+        +is_overdue(date) bool
+        +days_until_due(date) int
+    }
+
+    class VetVisit {
+        +date visit_date
+        +VisitType visit_type
+        +str clinic
+        +str vet_name
+        +str reason
+        +str diagnosis
+        +str treatment
+        +list~str~ prescriptions
+        +float weight_kg
+        +date follow_up_on
+        +str bill_id
+        +validate() void
+        +has_follow_up() bool
+        +is_emergency() bool
+    }
+
+    class GroomingSession {
+        +date session_date
+        +str provider
+        +list~GroomingService~ services
+        +int duration_minutes
+        +date next_due_on
+        +str bill_id
+        +validate() void
+        +service_labels() list~str~
+        +is_due_again(date, int) bool
+        +days_since(date) int
+    }
+
+    class Bill {
+        +str id
+        +str description
+        +BillCategory category
+        +float amount
+        +date billed_on
+        +PaymentStatus status
+        +float amount_paid
+        +bool insurance_claimed
+        +float reimbursed_amount
+        +str linked_record_id
+        +outstanding() float
+        +net_cost() float
+        +is_overdue(date) bool
+        +mark_paid(date, float) void
+    }
+
+    class CareTask {
+        +str id
+        +str title
+        +TaskCategory category
+        +int duration_minutes
+        +Priority priority
+        +Recurrence recurrence
+        +set weekdays
+        +date due_date
+        +TimeOfDay preferred_time
+        +time fixed_time
+        +bool skippable
+        +bool is_completed
+        +validate() void
+        +score(dict) float
+        +is_due(date) bool
+        +is_anchored() bool
+        +mark_complete() void
+        +to_dict() dict
+    }
+
+    class WalkTask {
+        +float distance_km
+        +bool weather_sensitive
+        +score(dict) float
+    }
+
+    class FeedingTask {
+        +int portion_grams
+        +score(dict) float
+    }
+
+    class MedicationTask {
+        +str dosage
+        +int min_hours_between_doses
+        +score(dict) float
+        +conflicts_with(MedicationTask, int) bool
+    }
+
+    class GroomingTask {
+        +str tool
+    }
+
+    class EnrichmentTask {
+        +bool indoor
+    }
+
+    class VetAppointment {
+        +str clinic
+        +is_anchored() bool
+    }
+
+    class OwnerPreferences {
+        +time wake_time
+        +time sleep_time
+        +int available_minutes
+        +int break_minutes
+        +StrategyName strategy
+        +str currency
+        +dict priority_weights
+        +list blocked_windows
+        +waking_minutes() int
+        +to_dict() dict
+    }
+
+    class DayConstraints {
+        +int day_start
+        +int day_end
+        +int available_minutes
+        +int break_minutes
+        +from_preferences(OwnerPreferences) DayConstraints
+        +is_blocked(int, int) bool
+        +next_free_minute(int) int
+    }
+
+    class Scheduler {
+        +DayConstraints constraints
+        +SortStrategy strategy
+        +build_plan(Owner, date, Pet, bool) DailyPlan
+        -_collect(Owner, Pet, date, bool) list
+        -_filter_due(list, date) tuple
+        -_rank(list) list
+        -_place(list, DailyPlan) DailyPlan
+        -_fits(CareTask, int, int) bool
+        -_skip_reason(CareTask, int) str
+        +explain(DailyPlan) str
+    }
+
+    class SortStrategy {
+        <<abstract>>
+        +StrategyName name
+        +rank(list~CareTask~) list~CareTask~
+        +explain() str
+    }
+
+    class PriorityFirstStrategy {
+        +rank(list~CareTask~) list~CareTask~
+    }
+
+    class ShortestFirstStrategy {
+        +rank(list~CareTask~) list~CareTask~
+    }
+
+    class WeightedScoreStrategy {
+        +dict weights
+        +rank(list~CareTask~) list~CareTask~
+    }
+
+    class BalancedStrategy {
+        +rank(list~CareTask~) list~CareTask~
+    }
+
+    class DailyPlan {
+        +date day
+        +list~ScheduledTask~ scheduled
+        +list~SkippedTask~ skipped
+        +str strategy_used
+        +add_scheduled(ScheduledTask) void
+        +add_skipped(CareTask, Pet, str) void
+        +total_minutes() int
+        +utilization(int) float
+        +unmet_needs() list~str~
+        +to_text() str
+        +to_markdown() str
+    }
+
+    class ScheduledTask {
+        +CareTask task
+        +Pet pet
+        +int start_minute
+        +int end_minute
+        +str reason
+        +time_label() str
+    }
+
+    class SkippedTask {
+        +CareTask task
+        +Pet pet
+        +str reason
+    }
+
+    class Storage {
+        <<module>>
+        +save_state(Owner, Path) Path
+        +load_state(Path) Owner
+        +export_plan(DailyPlan, Path) Path
+        +append_history(DailyPlan, Path) void
+    }
+
+    class Reminders {
+        <<module>>
+        +follow_up_tasks(Pet, date) list~CareTask~
+        +vaccination_tasks(Pet, date, int) list~CareTask~
+        +grooming_tasks(Pet, date, int) list~CareTask~
+        +all_reminders(Pet, date) list~CareTask~
+        +is_auto(CareTask) bool
+    }
+
+    class Expenses {
+        <<module>>
+        +total_spend(list~Bill~, date, date) float
+        +spend_by_category(list~Bill~) dict
+        +spend_by_month(list~Bill~) dict
+        +spend_by_pet(Owner, date, date) dict
+        +outstanding_bills(Owner) list~Bill~
+        +insurance_summary(list~Bill~) dict
+    }
+
+    Owner "1" o-- "*" Pet : keeps
+    Owner "1" *-- "1" OwnerPreferences : configured by
+    Owner "1" o-- "0..1" Contact : emergency contact
+    Owner "1" o-- "0..1" VetClinic : preferred vet
+    Contact <|-- VetClinic
+    Contact <|-- Groomer
+
+    Pet "1" o-- "*" CareTask : needs
+    Pet "1" *-- "1" MedicalHistory : health record
+    Pet "1" o-- "*" GroomingSession : groomed at
+    Pet "1" o-- "*" Bill : costs
+    Pet "1" o-- "0..1" VetClinic : treated by
+    Pet "1" o-- "0..1" Groomer : groomed by
+
+    MedicalHistory "1" o-- "*" Condition : diagnosed
+    MedicalHistory "1" o-- "*" Allergy : reacts to
+    MedicalHistory "1" o-- "*" Vaccination : vaccinated
+    MedicalHistory "1" o-- "*" VetVisit : visits
+
+    VetVisit ..> Bill : invoiced as
+    GroomingSession ..> Bill : invoiced as
+    Vaccination ..> Bill : invoiced as
+
+    Reminders ..> Pet : reads records
+    Reminders ..> CareTask : generates
+    Scheduler ..> Reminders : pulls due reminders
+    Expenses ..> Bill : aggregates
+
+    CareTask <|-- WalkTask
+    CareTask <|-- FeedingTask
+    CareTask <|-- MedicationTask
+    CareTask <|-- GroomingTask
+    CareTask <|-- EnrichmentTask
+    CareTask <|-- VetAppointment
+
+    SortStrategy <|.. PriorityFirstStrategy
+    SortStrategy <|.. ShortestFirstStrategy
+    SortStrategy <|.. WeightedScoreStrategy
+    SortStrategy <|.. BalancedStrategy
+
+    OwnerPreferences ..> DayConstraints : converts to
+    Scheduler "1" *-- "1" DayConstraints : limited by
+    Scheduler "1" o-- "1" SortStrategy : ranks with
+    Scheduler ..> Owner : reads
+    Scheduler ..> DailyPlan : produces
+    DailyPlan "1" o-- "*" ScheduledTask : contains
+    DailyPlan "1" o-- "*" SkippedTask : explains
+    ScheduledTask ..> CareTask : wraps
+    Storage ..> Owner : persists as JSON

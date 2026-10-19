@@ -1,0 +1,57 @@
+PawPal+ — Prompt Log
+====================
+Every prompt given by the user during development, in order, verbatim.
+Format:
+  [#] YYYY-MM-DD | stage
+  > prompt text
+
+
+[1] 2026-10-16 | discovery / planning
+> okay we are developing a website/webapp pawpal+ for pet maintancence and stuff,
+> you have access to README.md, according to that can you give me folder structure,
+> functions and all possible features that we can add, and I want all my prompts to
+> be saved to prompts.txt if possible in same folder, once I approve it then we do
+> the blue print, then implementation
+
+
+[2] 2026-10-16 | scope decision
+> let us do not explicitly use any database store and load data via jsons coz it's
+> just a prototype okay
+
+  Decision recorded: no database (no SQLite/Postgres/ORM). All persistence is
+  plain JSON files on disk via pawpal/services/storage.py.
+
+
+[3] 2026-10-16 | scaffold / stubs
+> cool the folder structure looks good, design classes, objects, functions without
+> implementation but add comments max 3 lines so that I know what they are meant
+> to do
+
+  Scope assumed (stated back to user): Tier A + Tier B, with hooks left for
+  C1/C2/C3. Single-page app.py with tabs rather than multipage ui/pages/.
+
+
+[4] 2026-10-16 | scope expansion — records
+> looks good, need to add dog age, name, medical history if any, hospital visits,
+> bills etc etc, same with grooming sessions too and owner primary details like
+> name, contact number too
+
+  Added a records layer: pawpal/models/records.py (Condition, Allergy,
+  Vaccination, VetVisit, GroomingSession, Bill, MedicalHistory),
+  pawpal/models/contact.py (Contact, VetClinic), plus services/expenses.py and
+  services/reminders.py. Records feed the scheduler as auto-generated tasks.
+
+
+[5] 2026-10-16 | implementation
+> everything looks great, can you implement all of it please and give me a
+> reasoning.txt why you had to take a decision, and if you have any ambiguity
+> about any feature
+
+  Full implementation of every stub, real test bodies (skips removed), app.py
+  rewired to the package. Decisions and open ambiguities written to reasoning.txt.
+
+
+[6] 2026-10-16 | run
+> cool streamlit run app.py
+
+  Launched the app locally on http://localhost:8501.

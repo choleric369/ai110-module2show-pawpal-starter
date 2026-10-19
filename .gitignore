@@ -3,3 +3,6 @@ __pycache__/
 .venv_new/
 .pytest_cache/
 .DS_Store
+# Live app state (sample_data.json is committed as the demo seed)
+data/pawpal_data.json
+data/history.json
